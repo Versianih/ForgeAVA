@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 
 # Módulos
-from brain.gerador import saída_gemini, salvar_arquivo, ler_observações
+from brain.gerador import saída_gemini, salvar_arquivo, read_prompt
 from brain.ava import retornarTextoAVA, enviarArquivoAVA, obterAtributoID
 
 # Bibliotecas
@@ -43,10 +43,9 @@ class Gerador:
         self.LOGIN = os.getenv("LOGIN", "")
         self.SENHA = os.getenv("SENHA", "")
         self.PASTA_SAIDA = os.getenv("PASTA_SAIDA", f"{os.getcwd()}/generatedCodes")
-        self.GET_OBSERVACOES = os.getenv("GET_OBSERVACOES", "False") == "True"
-        
+        self.GET_PROMPT = os.getenv("GET_PROMPT", "False") == "True"
         try:
-            self.observacoes = ler_observações("observacoes.txt")
+            self.prompt = read_prompt("prompt.txt")
         except UnicodeDecodeError as e:
             print(RED + f"Erro ao ler o arquivo: {e}" + RESET)
             return
@@ -232,7 +231,7 @@ class Gerador:
 
         # Tentar obter resposta do Gemini
         self.mensagem_carregamento_ava.config(text="Gerando Código...")
-        prompt = str(self.texto_atividade) + "" + str(self.observacoes if self.GET_OBSERVACOES == "True" else "")
+        prompt = str(self.prompt if self.GET_PROMPT == True else "") + f'\n{self.texto_atividade}'
         try:
             resposta = saída_gemini(prompt, self.API_KEY)
         except Exception as e :
@@ -344,7 +343,7 @@ class Gerador:
         threading.Thread(target=self.gerar_codigo_texto).start()
 
     def gerar_codigo_texto(self):
-        prompt = str(self.texto.get()) + "" + str(self.observacoes if self.GET_OBSERVACOES == "True" else "")
+        prompt = str(self.prompt if self.GET_PROMPT == True else "") + f'\n{self.texto.get()}'
         # Tenta obter a resposta do Gemini
         try:
             resposta = saída_gemini(prompt=prompt, api_key=self.API_KEY)
@@ -501,15 +500,15 @@ class Gerador:
 
         tk.Button(pasta_frame, text="Selecionar Outra Pasta" if self.PASTA_SAIDA else "Selecionar Pasta", command=self.selecionar_pasta).pack(pady=10, side="right")
 
-        self.opcao_observacoes = tk.StringVar(value=str(self.GET_OBSERVACOES))
-        # Frame para checkbox de observações
-        frame_check_obs = tk.Frame(frame_configuracoes, relief="solid", borderwidth=1, padx=5, pady=5)
-        frame_check_obs.pack(fill="x", pady=5)
+        self.prompt_option = tk.StringVar(value=str(self.GET_PROMPT))
+        # Frame para checkbox do prompt
+        frame_check_prompt = tk.Frame(frame_configuracoes, relief="solid", borderwidth=1, padx=5, pady=5)
+        frame_check_prompt.pack(fill="x", pady=5)
 
-        # Checkbox de observações
-        tk.Label(frame_check_obs, text="Usar Observações:", fg="black").pack(pady=5, side="left")
-        tk.Checkbutton(frame_check_obs, text="", variable=self.opcao_observacoes, onvalue="True", offvalue="False").pack(side="left", padx=5)
-        tk.Button(frame_check_obs, text="Editar Observações", command=self.abrirObservações).pack(pady=10, side="left")
+        # Checkbox do prompt
+        tk.Label(frame_check_prompt, text="Usar Prompt:", fg="black").pack(pady=5, side="left")
+        tk.Checkbutton(frame_check_prompt, text="", variable=self.prompt_option, onvalue="True", offvalue="False").pack(side="left", padx=5)
+        tk.Button(frame_check_prompt, text="Editar Prompt", command=self.open_prompt).pack(pady=10, side="left")
 
         tk.Button(frame_configuracoes, text="Salvar Configurações", command=self.salvar_configuracoes, bg="green", fg="white").pack(pady=10, side="right")
 
@@ -519,13 +518,13 @@ class Gerador:
         set_key(self.env_file, "LOGIN", self.login_ava_entry.get())
         set_key(self.env_file, "SENHA", self.senha_ava_entry.get())
         set_key(self.env_file, "PASTA_SAIDA", self.PASTA_SAIDA)
-        set_key(self.env_file, "GET_OBSERVACOES", "True" if self.opcao_observacoes.get() == "True" else "False")
+        set_key(self.env_file, "GET_PROMPT", "True" if self.prompt_option.get() == "True" else "False")
 
         # Atualizar os valores armazenados
         self.API_KEY = self.api_key_entry.get()
         self.LOGIN = self.login_ava_entry.get()
         self.SENHA = self.senha_ava_entry.get()
-        self.GET_OBSERVACOES = self.opcao_observacoes.get()
+        self.GET_PROMPT = self.prompt_option.get()
 
         messagebox.showinfo("Configurações", "As configurações foram salvas com sucesso!")
         self.mostrar_configuracoes()
@@ -546,42 +545,42 @@ class Gerador:
             self.PASTA_SAIDA = nova_pasta
             self.label_PASTA_SAIDA.config(text=self.PASTA_SAIDA)
 
-    def abrirObservações(self):
-        self.caminho_arquivo_observacoes = os.path.join('brain', 'files', 'observacoes.txt')
+    def open_prompt(self):
+        self.prompt_path = os.path.join('brain', 'files', 'prompt.txt')
 
         self.limpar_tela()
 
-        frame_edicao = tk.LabelFrame(self.frame_principal, text="Edição de observações.txt", padx=10, pady=10)
+        frame_edicao = tk.LabelFrame(self.frame_principal, text="Edição de prompt.txt", padx=10, pady=10)
         frame_edicao.pack(fill="both", padx=20, pady=20)
 
         self.area_edicao = tk.Text(frame_edicao, wrap="word", height=20, bg="white", fg="black")
         self.area_edicao.pack(fill="both", expand=True, padx=10, pady=10)
 
-        with open(self.caminho_arquivo_observacoes, "r", encoding="utf-8") as file:
+        with open(self.prompt_path, "r", encoding="utf-8") as file:
             conteudo = file.read()
 
         conteudo = conteudo.replace("\t", "    ")
         self.area_edicao.insert(tk.END, conteudo)
 
-        self.area_edicao.bind('<Tab>', self.inserirEspaçoObservações)
+        self.area_edicao.bind('<Tab>', self.insert_prompt_space)
 
         # Frame Botões
         frame_botoes = tk.Frame(frame_edicao)
         frame_botoes.pack(fill="x", pady=10, padx=10, anchor="e")
         
-        btn_salvar = tk.Button(frame_botoes, text="Salvar Alterações", command=lambda: self.salvarEdiçõesObservações(self.caminho_arquivo_observacoes), fg="white", bg="green")
+        btn_salvar = tk.Button(frame_botoes, text="Salvar Alterações", command=lambda: self.save_prompt_edition(self.prompt_path), fg="white", bg="green")
         btn_salvar.pack(side="right", padx=5)
         btn_selecionar = tk.Button(frame_botoes, text="Voltar", command=self.mostrar_configuracoes)
         btn_selecionar.pack(side="right", padx=5)
 
-    def inserirEspaçoObservações(self, event):
+    def insert_prompt_space(self, event):
         pos_cursor = self.area_edicao.index(tk.INSERT)
         self.area_edicao.insert(pos_cursor, '    ')
         return 'break'
 
-    def salvarEdiçõesObservações(self, nome_arquivo):
+    def save_prompt_edition(self, nome_arquivo='prompt.txt'):
         conteudo_editado = self.area_edicao.get("1.0", tk.END)
-        caminho_arquivo = os.path.join('brain', 'files', 'observacoes.txt')
+        caminho_arquivo = os.path.join('brain', 'files', nome_arquivo)
         with open(caminho_arquivo, "w", encoding="utf-8") as file:
             file.write(conteudo_editado)
 

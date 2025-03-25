@@ -26,8 +26,8 @@
   4.4 Clique em "Gerar Código"
 
 
-5. O que é o arquivo observacoes.txt?
-  5.1 O arquivo observacoes.txt contém alguns parâmetros que são informados ao Gemini para que seu código seja gerado de uma maneira a satisfazer as exigências de determinados professores.
+5. O que é o arquivo prompt.txt?
+  5.1 O arquivo prompt.txt contém alguns parâmetros que são informados ao Gemini para que seu código seja gerado de uma maneira a satisfazer as exigências de determinados professores.
   5.2 O arquivo pode ser editado caso há necessidade na aba "Configurações"
 
 

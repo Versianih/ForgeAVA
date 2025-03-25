@@ -40,7 +40,7 @@ def salvar_arquivo(nome_arquivo, conteudo, pasta):
         print(RED + f"Erro ao salvar o arquivo: {e}" + RESET)
 
 
-def ler_observações(file_name):
+def read_prompt(file_name):
     current_dir = os.getcwd()
     file_path = os.path.join(current_dir, "brain", "files", file_name)
 
@@ -68,4 +68,4 @@ def ler_observações(file_name):
     except Exception as e:
         raise Exception(f"Erro ao processar o arquivo '{file_name}': {e}")
 
-    raise UnicodeDecodeError("Falha ao ler o arquivo de Observações com as codificações testadas.")
+    raise UnicodeDecodeError("Falha ao ler o arquivo do Prompt com as codificações testadas.")
