@@ -15,16 +15,15 @@ sudo pacman -S tk  # Arch Linux
 
 ## Instalando dependências do ForgeAVA
 Para instalar as dependências, na pasta do ForgeAVA, siga estas etapas:
-Linux e macOS:
 
+### Linux e macOS:
 ```
 python3 -m venv venv
-source venv/bin/activate #Criando e ativando uma virtualenv
+source venv/bin/activate # Criando e ativando uma virtualenv
 pip install -r requirements.txt
 ```
 
-Windows:
-
+### Windows:
 ```
 python -m venv venv
 venv/scripts/activate #Criando e ativando uma virtualenv
@@ -39,3 +38,11 @@ python main.py
 ```
 
 Se tudo ocorreu bem, uma nova janela abrirá e você poderá usar o ForgeAVA.
+
+## Contribua com o ForgeAVA
+#### Para contribuir com o projeto, bifurque o repositório, suba suas alterações e crie uma [solicitação de pull](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)
+#### Você é livre para utilizar e modificar esse código.
+
+
+## Licença
+Esse código está sob licença, saiba mais em [LICENÇA](LICENSE)
