@@ -1,43 +1,39 @@
-# Bibliotecas Python
-import os, sys
+# Python libs
+import os
 
-# Bibliotecas
+# Libs
 import google.generativeai as genai
 
-# Cores Terminal
-GRENN = '\033[32m'
-RED = '\033[31m'
-RESET = '\033[0;0m'
 
 
-def limpar_saída_gemini(resposta):
-    linhas = resposta.splitlines()
-    if linhas and linhas[0] in ['```python', '```python 3.xxx', '```python3']:
-        linhas = linhas[1:]    
-    if linhas and linhas[-1] == '```':
-        linhas = linhas[:-1]
-    return "\n".join(linhas)
+def clean_call_gemini(response):
+    lines = response.splitlines()
+    if lines and lines[0] in ['```python', '```python 3.xxx', '```python3']:
+        lines = lines[1:]    
+    if lines and lines[-1] == '```':
+        lines = lines[:-1]
+    return "\n".join(lines)
 
 
-def saída_gemini(prompt, api_key):
+def call_gemini(prompt, api_key):
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-1.5-pro')
     try:
         response = model.generate_content(prompt)
-        resposta_limpa = limpar_saída_gemini(response.text)
-        return resposta_limpa
+        clean_response = clean_call_gemini(response.text)
+        return clean_response
     except Exception as e:
-        return (RED + f"Erro ao conectar à API Gemini: {e}" + RESET)
+        return (f"Erro ao conectar à API Gemini: {e}")
 
 
-def salvar_arquivo(nome_arquivo, conteudo, pasta):
-    caminho_pasta = os.path.join(pasta, nome_arquivo)
+def save_file(file_name, content, folder):
+    file_path = os.path.join(folder, file_name)
     try:
-        with open(caminho_pasta, "w", encoding="utf-8") as file:
-            file.write(conteudo)
-        print(GRENN + "Arquivo salvo com sucesso!" + RESET)
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(content)
+        print("Arquivo salvo com sucesso!")
     except Exception as e:
-        print(RED + f"Erro ao salvar o arquivo: {e}" + RESET)
+        print(f"Erro ao salvar o arquivo: {e}")
 
 
 def read_prompt(file_name):
@@ -59,7 +55,6 @@ def read_prompt(file_name):
         with open(file_path, "rb") as file:
             raw_data = file.read()
 
-        # Teste manual de algumas codificações adicionais
         for encoding in ["utf-16", "utf-32"]:
             try:
                 return raw_data.decode(encoding)
