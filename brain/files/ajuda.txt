@@ -27,9 +27,5 @@
 
 
 5. O que é o arquivo prompt.txt?
-  5.1 O arquivo prompt.txt contém alguns parâmetros que são informados ao Gemini para que seu código seja gerado de uma maneira a satisfazer as exigências de determinados professores.
-  5.2 O arquivo pode ser editado caso há necessidade na aba "Configurações"
-
-
-X.
-  Qualquer dúvida adicional, entrar em contato por e-mail com: mevrse@protonmail.com
+  5.1 O arquivo prompt.txt contém um prompt com algumas instruções que são fornecidas à LLM para que seu código seja gerado de uma maneira que satisfaça as exigências de determinados professores.
+  5.2 O arquivo pode ser editado, se houver necessidade, na aba "Configurações".

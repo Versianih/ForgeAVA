@@ -4,7 +4,10 @@
 
 */.env
 
+# Enviroments
 env/
 venv/
+.venv/
+.env/
 
 generatedCodes/*

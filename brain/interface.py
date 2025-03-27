@@ -16,7 +16,7 @@ RED = '\033[31m'
 RESET = '\033[0;0m'
 
 
-class Gerador:
+class ForgeAVA:
     ''' Configurações da Interface '''
     def __init__(self, root):
         self.root = root
@@ -607,7 +607,7 @@ class Gerador:
         # Exibindo o conteúdo de ajuda em um widget Text
         texto_ajuda = tk.Text(frame_ajuda, wrap="word", bg="white", fg="black", height=20)
         texto_ajuda.insert("1.0", conteudo_ajuda)
-        texto_ajuda.configure(state="normal")  # Permitir edição temporária para adicionar tags
+        texto_ajuda.configure(state="normal")
         texto_ajuda.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Detectar e marcar links no texto
@@ -625,17 +625,13 @@ class Gerador:
                 texto_ajuda.tag_bind("link", "<Enter>", lambda e: texto_ajuda.config(cursor="hand2"))
                 texto_ajuda.tag_bind("link", "<Leave>", lambda e: texto_ajuda.config(cursor=""))
 
-        # Aplicar tags para links
         marcar_links()
-        texto_ajuda.configure(state="disabled")  # Desativar edição novamente
-
-        # Botão para atualizar ajuda
-        # tk.Button(frame_ajuda, text="Recarregar Ajuda", command=self.mostrar_ajuda, bg="blue", fg="white").pack(pady=10)
+        texto_ajuda.configure(state="disabled")
 
 
 def interface():
     root = tk.Tk()
-    app = Gerador(root)
+    app = ForgeAVA(root)
     root.mainloop()
 
 if __name__ == '__main__':
