@@ -2,7 +2,7 @@
 **/*.py[cod]
 **/*$py.class
 
-*/.env
+**/.env
 
 # Enviroments
 env/

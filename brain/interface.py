@@ -32,7 +32,7 @@ class ForgeAVA:
 
 
         # .env settings
-        self.env_file = "brain/.env"
+        self.env_file = ".env"
         load_dotenv(self.env_file)
 
         if not os.path.exists(f"{os.getcwd()}/generatedCodes"):
