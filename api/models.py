@@ -21,3 +21,7 @@ class Models:
     def get_provider() -> str | None:
         model_data = Models.models.get(EnvManager.get_env('MODEL'), None)
         return model_data['provider']
+    
+    @staticmethod
+    def get_models_list() -> list:
+        return [key for key in Models.models.keys()]

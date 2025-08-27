@@ -3,7 +3,7 @@ from modules.file_manager import FileManager
 
 class PromptManager:
     def __init__(self):
-        self.raw_prompt = PromptManager.read_prompt()
+        self.raw_prompt = self.read_prompt()
 
     def get_activity_prompt(self, activity_content: str) -> str:
         prompt = self.raw_prompt.format(activity_content=activity_content)

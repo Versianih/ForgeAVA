@@ -9,7 +9,7 @@ class EnvManager:
         'LOGIN': '',
         'PASSWORD': '',
         'OUTPUT_PATH': '',
-        'USE_PROMPT': 'True'
+        'USE_PROMPT': 'Sim'
     }
 
     @staticmethod
