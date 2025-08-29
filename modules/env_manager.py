@@ -8,7 +8,7 @@ class EnvManager:
         'MODEL': '',
         'LOGIN': '',
         'PASSWORD': '',
-        'OUTPUT_PATH': '',
+        'OUTPUT_PATH': f'{Paths.output.absolute()}',
         'USE_PROMPT': 'Sim'
     }
 

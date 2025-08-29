@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QLineEdit, QComboBox, QPushButton,
-    QFileDialog, QPlainTextEdit, QLabel, QMessageBox
+    QFileDialog, QPlainTextEdit, QLabel, QMessageBox, QScrollArea
 )
+from PySide6.QtCore import Qt
 from modules.env_manager import EnvManager
 from modules.prompt_manager import PromptManager
 from api.models import Models
@@ -9,8 +10,19 @@ from api.models import Models
 class SettingsInterface(QWidget):
     def __init__(self):
         super().__init__()
-        layout = QVBoxLayout(self)
+        
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        
+        content_widget = QWidget()
+        layout = QVBoxLayout(content_widget)
         layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(10)
 
         self.login = QLineEdit()
         self.login.setPlaceholderText("Login AVA")
@@ -33,6 +45,7 @@ class SettingsInterface(QWidget):
         self.prompt_btn = QPushButton("Abrir Prompt")
         self.prompt_editor = QPlainTextEdit()
         self.prompt_editor.hide()
+        self.prompt_editor.setMinimumHeight(200)
 
         self.prompt_save_btn = QPushButton("Salvar Prompt")
         self.prompt_save_btn.hide()
@@ -62,6 +75,9 @@ class SettingsInterface(QWidget):
         layout.addStretch()
         layout.addWidget(self.save_btn)
 
+        scroll_area.setWidget(content_widget)
+        main_layout.addWidget(scroll_area)
+
         self.prompt_btn.clicked.connect(self.toggle_prompt)
         self.path_btn.clicked.connect(self.selecionar_pasta)
         self.save_btn.clicked.connect(self.save_settings)
@@ -73,6 +89,12 @@ class SettingsInterface(QWidget):
         visible = not self.prompt_editor.isVisible()
         self.prompt_editor.setVisible(visible)
         self.prompt_save_btn.setVisible(visible)
+        
+        # Alterar texto do botão baseado no estado
+        if visible:
+            self.prompt_btn.setText("Fechar Prompt")
+        else:
+            self.prompt_btn.setText("Abrir Prompt")
 
     def selecionar_pasta(self):
         pasta = QFileDialog.getExistingDirectory(self, "Selecionar Pasta")

@@ -4,7 +4,13 @@ from PySide6.QtWidgets import QApplication
 from interface.interface import Interface
 from interface.styles import Styles
 
+from modules.file_manager import FileManager
+from modules.env_manager import EnvManager
+
 if __name__ == "__main__":
+    FileManager.create_output_or_pass()
+    EnvManager.create_env_or_pass()
+
     app = QApplication(argv)
     Styles.apply(app)
 
