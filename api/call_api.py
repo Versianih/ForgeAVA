@@ -49,4 +49,3 @@ class CallLLM(Models):
             model=self.model,
         )
         return response.choices[0].message.content
-

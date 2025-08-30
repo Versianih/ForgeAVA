@@ -31,3 +31,10 @@ class FileManager:
             raise RuntimeError(f"Erro de sistema ao ler o arquivo {file_path}: {e}")
         except Exception as e:
             raise RuntimeError(f"Erro desconhecido ao ler o arquivo: {e}")
+
+    @staticmethod
+    def save_response(content:str, filename:str) -> None:
+        FileManager.save_file(
+            content=content,
+            file_path=Path(Paths.output) / filename
+        )

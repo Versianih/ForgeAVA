@@ -90,7 +90,6 @@ class SettingsInterface(QWidget):
         self.prompt_editor.setVisible(visible)
         self.prompt_save_btn.setVisible(visible)
         
-        # Alterar texto do botão baseado no estado
         if visible:
             self.prompt_btn.setText("Fechar Prompt")
         else:
