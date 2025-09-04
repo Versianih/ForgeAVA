@@ -8,5 +8,5 @@ class Paths:
     modules = Path('./modules')
     interface = Path('./interface')
 
-    prompt = Path('./api/prompt.txt')
+    prompt = Path('./api/prompt.md')
     help = Path('./files/help.txt')
