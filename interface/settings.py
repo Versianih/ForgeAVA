@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 from modules.env_manager import EnvManager
 from modules.prompt_manager import PromptManager
+from modules.language import Language
 from api.models import Models
 
 class SettingsInterface(QWidget):
@@ -34,10 +35,16 @@ class SettingsInterface(QWidget):
         self.api_key = QLineEdit()
         self.api_key.setPlaceholderText("Chave API")
 
+
         self.model_dropdown = QComboBox()
         self.model_dropdown.addItems(Models.get_models_list())
         self.model_dropdown.setEditable(False)
         self.model_dropdown.setInsertPolicy(QComboBox.NoInsert)
+
+        self.language_dropdown = QComboBox()
+        self.language_dropdown.addItems(Language.languages)
+        self.language_dropdown.setEditable(False)
+        self.language_dropdown.setInsertPolicy(QComboBox.NoInsert)
 
         self.use_prompt = QComboBox()
         self.use_prompt.addItems(["Sim", "Não"])
@@ -69,6 +76,8 @@ class SettingsInterface(QWidget):
         layout.addWidget(self.prompt_save_btn)
         layout.addWidget(QLabel("Modelo de IA:"))
         layout.addWidget(self.model_dropdown)
+        layout.addWidget(QLabel("Linguagem utilizada:"))
+        layout.addWidget(self.language_dropdown)
         layout.addWidget(QLabel("Pasta de output dos arquivos gerados:"))
         layout.addWidget(self.output_path)
         layout.addWidget(self.path_btn)
@@ -90,10 +99,8 @@ class SettingsInterface(QWidget):
         self.prompt_editor.setVisible(visible)
         self.prompt_save_btn.setVisible(visible)
         
-        if visible:
-            self.prompt_btn.setText("Fechar Prompt")
-        else:
-            self.prompt_btn.setText("Abrir Prompt")
+        if visible: self.prompt_btn.setText("Fechar Prompt")
+        else: self.prompt_btn.setText("Abrir Prompt")
 
     def selecionar_pasta(self):
         pasta = QFileDialog.getExistingDirectory(self, "Selecionar Pasta")
@@ -108,6 +115,7 @@ class SettingsInterface(QWidget):
             manager.update_env('PASSWORD', data['password'])
             manager.update_env('API_KEY', data['api_key'])
             manager.update_env('MODEL', data['model'])
+            manager.update_env('LANGUAGE', data['language'])
             manager.update_env('OUTPUT_PATH', data['output'])
             manager.update_env('USE_PROMPT', data['use_prompt'])
 
@@ -144,9 +152,15 @@ class SettingsInterface(QWidget):
         if index >= 0:
             self.use_prompt.setCurrentIndex(index)
 
+        language_value = manager.get_env("LANGUAGE")
+        index = self.language_dropdown.findText(language_value)
+        if index >= 0:
+            self.language_dropdown.setCurrentIndex(index)
+
         saved_prompt = prompt_manager.read_prompt()
         if saved_prompt:
             self.prompt_editor.setPlainText(saved_prompt)
+
 
     def get_settings(self):
         return {
@@ -154,6 +168,7 @@ class SettingsInterface(QWidget):
             "password": self.password.text(),
             "api_key": self.api_key.text(),
             "model": self.model_dropdown.currentText(),
+            "language": self.language_dropdown.currentText(),
             "use_prompt": self.use_prompt.currentText(),
             "output": self.output_path.text()
         }
