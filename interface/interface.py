@@ -1,4 +1,3 @@
-from sys import argv, exit
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QPushButton,
     QHBoxLayout, QStackedWidget, QLabel
