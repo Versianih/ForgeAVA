@@ -6,8 +6,28 @@ class Models:
             'model': 'gemini-1.5-pro',
             'provider': 'google'
         },
-        'llama3-70b-8192': {
-            'model': 'llama3-70b-8192',
+        'llama-3.1-8b-instant': {
+            'model': 'llama-3.1-8b-instant',
+            'provider': 'groq'
+        },
+        'llama-3.3-70b-versatile': {
+            'model': 'llama-3.3-70b-versatile',
+            'provider': 'groq'
+        },
+        'openai/gpt-oss-120b': {
+            'model': 'openai/gpt-oss-120b',
+            'provider': 'groq'
+        },
+        'openai/gpt-oss-20b': {
+            'model': 'openai/gpt-oss-20b',
+            'provider': 'groq'
+        },
+        'whisper-large-v3': {
+            'model': 'whisper-large-v3',
+            'provider': 'groq'
+        },
+        'whisper-large-v3-turbo': {
+            'model': 'whisper-large-v3-turbo',
             'provider': 'groq'
         },
     }
