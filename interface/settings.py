@@ -35,9 +35,9 @@ class SettingsInterface(QWidget):
         self.api_key = QLineEdit()
         self.api_key.setPlaceholderText("Chave API")
 
-
         self.model_dropdown = QComboBox()
-        self.model_dropdown.addItems(Models.get_models_list())
+        for label, value in zip(Models.get_models_list_with_provider(), Models.get_models_list()):
+            self.model_dropdown.addItem(label, value)
         self.model_dropdown.setEditable(False)
         self.model_dropdown.setInsertPolicy(QComboBox.NoInsert)
 
@@ -143,7 +143,7 @@ class SettingsInterface(QWidget):
         self.output_path.setText(manager.get_env("OUTPUT_PATH"))
 
         model_value = manager.get_env("MODEL")
-        index = self.model_dropdown.findText(model_value)
+        index = self.model_dropdown.findData(model_value)
         if index >= 0:
             self.model_dropdown.setCurrentIndex(index)
 
@@ -161,13 +161,12 @@ class SettingsInterface(QWidget):
         if saved_prompt:
             self.prompt_editor.setPlainText(saved_prompt)
 
-
     def get_settings(self):
         return {
             "login": self.login.text(),
             "password": self.password.text(),
             "api_key": self.api_key.text(),
-            "model": self.model_dropdown.currentText(),
+            "model": self.model_dropdown.currentData(),
             "language": self.language_dropdown.currentText(),
             "use_prompt": self.use_prompt.currentText(),
             "output": self.output_path.text()
