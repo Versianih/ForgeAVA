@@ -14,7 +14,7 @@ class CallLLM(Models):
         self._validate_provider()
 
     def _validate_provider(self):
-        if self.provider not in ('google', 'groq'):
+        if self.provider not in ('google', 'groq', 'openai'):
             raise ValueError(f"Provedor não suportado: {self.provider}")
 
     def _get_api_method(self):
@@ -22,6 +22,8 @@ class CallLLM(Models):
             return self._call_gemini
         if self.provider == 'groq':
             return self._call_groq
+        if self.provider == 'openai':
+            return self._call_openai
         return
 
     def call(self, prompt: str) -> str:
@@ -47,5 +49,14 @@ class CallLLM(Models):
         response = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model=self.model,
+        )
+        return response.choices[0].message.content
+
+    def _call_openai(self, prompt: str) -> str:
+        import openai
+        openai.api_key = self.api_key
+        response = openai.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
         )
         return response.choices[0].message.content

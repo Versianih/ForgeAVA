@@ -3,6 +3,7 @@ from modules.env_manager import EnvManager
 class Models:
     models = {
         # Google models
+        # https://ai.google.dev/gemini-api/docs/models?hl=pt-br
         'gemini-2.5-pro': {
             'provider': 'google'
         },
@@ -20,6 +21,7 @@ class Models:
         },
 
         # Groq models
+        # https://console.groq.com/docs/models
         'llama-3.1-8b-instant': {
             'provider': 'groq'
         },
@@ -37,6 +39,21 @@ class Models:
         },
         'whisper-large-v3-turbo': {
             'provider': 'groq'
+        },
+
+        # OpenAI models
+        # https://platform.openai.com/api-keys
+        'gpt-5-2025-08-07': {
+            'provider': 'openai'
+        },
+        'gpt-5-mini-2025-08-07': {
+            'provider': 'openai'
+        },
+        'gpt-5-nano-2025-08-07': {
+            'provider': 'openai'
+        },
+        'gpt-4.1-2025-04-14': {
+            'provider': 'openai'
         },
     }
 
