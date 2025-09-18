@@ -44,15 +44,19 @@ class Models:
         # OpenAI models
         # https://platform.openai.com/api-keys
         'gpt-5-2025-08-07': {
+            'name': 'GPT-5',
             'provider': 'openai'
         },
         'gpt-5-mini-2025-08-07': {
+            'name': 'GPT-5 Mini',
             'provider': 'openai'
         },
         'gpt-5-nano-2025-08-07': {
+            'name': 'GPT-5 Nano',
             'provider': 'openai'
         },
         'gpt-4.1-2025-04-14': {
+            'name': 'GPT-4.1',
             'provider': 'openai'
         },
     }
@@ -74,6 +78,6 @@ class Models:
     @staticmethod
     def get_models_list_with_provider() -> list:
         return [
-            f"{data['provider'].upper()}: {key}"
+            f"{data['provider'].upper()}: {data.get('name', key)}"
             for key, data in Models.models.items()
         ] if Models.models else []

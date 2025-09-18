@@ -37,9 +37,10 @@ class CallLLM(Models):
             raise RuntimeError(f"Erro ao chamar o modelo {self.model} via {self.provider}: {str(e)}") from e
 
     def _call_gemini(self, prompt: str) -> str:
-        import google.generativeai as genai
-        genai.configure(api_key=self.api_key)
-        model = genai.GenerativeModel(self.model)
+        from google.generativeai import configure, GenerativeModel
+
+        configure(api_key=self.api_key)
+        model = GenerativeModel(self.model)
         response = model.generate_content(prompt)
         return response.text
 

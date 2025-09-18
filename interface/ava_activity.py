@@ -149,6 +149,19 @@ class AvaActivityInterface(QWidget):
     def _on_processing_success(self, message: str) -> None:
         self._hide_processing_ui()
         QMessageBox.information(self, "Sucesso", message)
+        self.url_or_id.clear()
+        self.filename.clear()
+        self._reload_generated_files()
+
+    def _reload_generated_files(self):
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, "stack"):
+                widget = parent.stack.widget(2)
+                if hasattr(widget, "carregar_arquivos"):
+                    widget.carregar_arquivos()
+                break
+            parent = parent.parent()
 
     def _on_processing_error(self, error_message: str) -> None:
         self._hide_processing_ui()
