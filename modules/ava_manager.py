@@ -9,6 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
+DEBUG = True
+
 class AvaManager:
     """
     Gerencia interações automatizadas com o AVA do Ifes (Moodle).\n
@@ -18,7 +20,7 @@ class AvaManager:
         - Login automático\n
     """
 
-    BASE_URL = "https://ava3.cefor.ifes.edu.br/"
+    BASE_URL = "https://ava3.cefor.ifes.edu.br/login/index.php"
     LOGIN_TIMEOUT = 10
     POST_ACTION_DELAY = 1
 
@@ -107,7 +109,14 @@ class AvaManager:
 
     def _setup_driver(self):
         chrome_options = Options()
-        if self.headless:
+        effective_headless = self.headless
+        if hasattr(self, "force_visible") and self.force_visible:
+            effective_headless = False
+        if DEBUG and hasattr(self, "force_visible") and self.force_visible:
+            effective_headless = False
+        elif DEBUG and not hasattr(self, "force_visible"):
+            effective_headless = False
+        if effective_headless:
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--disable-gpu")
             chrome_options.add_argument("--no-sandbox")
@@ -159,6 +168,7 @@ class AvaManager:
         :param activity_id: ID da atividade\n
         :return: texto da atividade ou RuntimeError em caso de falha\n
         """
+        self.force_visible = True if DEBUG else False
         self._setup_driver()
         try:
             self._login(login, password)
