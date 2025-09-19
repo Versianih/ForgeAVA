@@ -38,3 +38,12 @@ class FileManager:
             content=content,
             file_path=Path(Paths.output) / filename
         )
+
+    @staticmethod
+    def clean_output_directory() -> None:
+        from shutil import rmtree
+        try:
+            rmtree(Paths.output)
+            makedirs(Paths.output, exist_ok=True)
+        except Exception as e:
+            raise RuntimeError(f"Erro ao limpar o diretório de saída: {e}")
