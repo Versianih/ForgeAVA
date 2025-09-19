@@ -14,7 +14,7 @@ class CallLLM(Models):
         self._validate_provider()
 
     def _validate_provider(self):
-        if self.provider not in ('google', 'groq', 'openai'):
+        if self.provider not in ('google', 'groq', 'openai', 'anthropic'):
             raise ValueError(f"Provedor não suportado: {self.provider}")
 
     def _get_api_method(self):
@@ -24,6 +24,8 @@ class CallLLM(Models):
             return self._call_groq
         if self.provider == 'openai':
             return self._call_openai
+        if self.provider == 'anthropic':
+            return self._call_anthropic
         return
 
     def call(self, prompt: str) -> str:
@@ -61,3 +63,16 @@ class CallLLM(Models):
             messages=[{"role": "user", "content": prompt}],
         )
         return response.choices[0].message.content
+
+    def _call_anthropic(self, prompt: str) -> str:
+        from anthropic import Anthropic
+
+        client = Anthropic(api_key=self.api_key)
+
+        message = client.messages.create(
+            model=self.model,
+            max_tokens=1000,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        return message.content

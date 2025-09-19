@@ -59,6 +59,33 @@ class Models:
             'name': 'GPT-4.1',
             'provider': 'openai'
         },
+
+        # Anthropic models
+        # https://docs.claude.com/pt/docs/about-claude/models/overview
+        'claude-opus-4-1-20250805': {
+            'name': 'Claude 4.1 Opus',
+            'provider': 'anthropic',
+        },
+        'claude-opus-4-20250514': {
+            'name': 'Claude 4 Opus',
+            'provider': 'anthropic'
+        },
+        'claude-sonnet-4-20250514': {
+            'name': 'Claude 4 Sonnet',
+            'provider': 'anthropic'
+        },
+        'claude-3-7-sonnet-latest': {
+            'name': 'Claude 3.7 Sonnet',
+            'provider': 'anthropic'
+        },
+        'claude-3-5-haiku-latest': {
+            'name': 'Claude 3.5 Haiku',
+            'provider': 'anthropic'
+        },
+        'claude-3-haiku-20240307': {
+            'name': 'Claude 3 Haiku',
+            'provider': 'anthropic'
+        },
     }
 
     @staticmethod
