@@ -166,24 +166,24 @@ class AvaManager:
                 self.driver.execute_script("arguments[0].click();", send_button)
             else:
                 raise RuntimeError("Botão de envio não encontrado.")
-            sleep(2)
+            sleep(2 * self.POST_ACTION_DELAY)
             upload_enter = self.driver.execute_script(self._SELECTORS["file_upload_enter_button"])
             if upload_enter:
                 upload_enter.send_keys(Keys.ENTER)
             else:
                 raise RuntimeError("Botão de upload não encontrado.")
-            sleep(2)
+            sleep(2 * self.POST_ACTION_DELAY)
             file_input = self.driver.find_element(By.NAME, "repo_upload_file")
             file_input.send_keys(full_path)
-            sleep(1)
+            sleep(self.POST_ACTION_DELAY)
             action.send_keys(Keys.TAB * 6, Keys.ENTER).perform()
-            sleep(1)
+            sleep(self.POST_ACTION_DELAY)
             confirm_button = self.driver.execute_script(self._SELECTORS["confirm_send_file"])
             if confirm_button:
                 confirm_button.send_keys(Keys.ENTER)
             else:
                 raise RuntimeError("Botão de confirmação de envio não encontrado.")
-            sleep(1)
+            sleep(self.POST_ACTION_DELAY)
             edit_button = self.driver.execute_script(self._SELECTORS["edit_submission_button"])
             if edit_button:
                 self.driver.execute_script("arguments[0].click();", edit_button)
@@ -192,7 +192,7 @@ class AvaManager:
             while True:
                 try:
                     self.driver.title
-                    sleep(1)
+                    sleep(self.POST_ACTION_DELAY)
                 except Exception:
                     break
             return True

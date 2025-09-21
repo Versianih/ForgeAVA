@@ -11,7 +11,7 @@ from modules.tools import Tools
 if __name__ == "__main__":
     FileManager.create_output_or_pass()
     EnvManager.create_env_or_pass()
-    if argv:
+    if len(argv) > 1:
         Tools()
     else:
         app = QApplication(argv)
