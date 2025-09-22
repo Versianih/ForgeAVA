@@ -16,13 +16,13 @@ class EnvManager:
 
     @staticmethod
     def get_env(key: str, default: str | None = None) -> str | None:
-        load_dotenv(Paths.env)
+        load_dotenv(Paths.env, override=True)
         return getenv(key, default)
 
     @staticmethod
     def update_env(key: str, value: str) -> None:
         set_key(Paths.env, key, str(value))
-        load_dotenv(Paths.env)
+        load_dotenv(Paths.env, override=True)
 
     @staticmethod
     def create_env_or_pass() -> None:
@@ -30,8 +30,6 @@ class EnvManager:
             for key, value in EnvManager.default_env.items():
                 set_key(Paths.env, key, str(value))
             return
-
-        load_dotenv(Paths.env)
 
         missing_keys = []
         for key in EnvManager.default_env:
@@ -44,4 +42,4 @@ class EnvManager:
                 if current_value is None:
                     set_key(Paths.env, key, str(value))
         
-        load_dotenv(Paths.env)
+        load_dotenv(Paths.env, override=True)
