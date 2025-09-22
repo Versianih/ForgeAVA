@@ -18,6 +18,7 @@ help:
 	@echo "Comandos disponíveis:"
 	@echo "  make venv     - Cria o ambiente virtual"
 	@echo "  make install  - Instala as dependências"
+	@echo "  make setup    - Instala e configura o projeto"
 	@echo "  make run      - Executa o projeto"
 	@echo "  make clean    - Remove o ambiente virtual"
 
@@ -28,6 +29,9 @@ install: venv
 	$(VENV_PIP) install --upgrade pip
 	$(VENV_PIP) install uv
 	$(VENV_UV) pip install -r requirements.txt
+
+setup: install
+	$(VENV_PYTHON) main.py -s
 
 run:
 	$(VENV_PYTHON) main.py

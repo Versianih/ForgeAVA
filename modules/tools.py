@@ -1,9 +1,10 @@
 from sys import argv
 from modules.file_manager import FileManager
+from modules.setup import Setup
 
 class Tools:
     def __init__(self):
-        args = ['-c']
+        args = ['-c', '-s']
         if argv:
             for arg in argv[1:]:
                 if not arg in args:
@@ -11,5 +12,8 @@ class Tools:
                 self.exec_tools(arg)
 
     def exec_tools(self, tool_name: str, *args, **kwargs):
-        if tool_name == "-c":
-            FileManager.clean_output_directory()
+        match tool_name:
+            case "-c":
+                FileManager.clean_output_directory()
+            case "-s":
+                Setup().run()
