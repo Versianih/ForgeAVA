@@ -9,6 +9,9 @@ from modules.prompt_manager import PromptManager
 from modules.file_manager import FileManager
 from api.call_api import CallLLM
 
+from modules.debug import Debug
+debug = Debug()
+
 
 class ProcessingThread(QThread):
     progress_update = Signal(str)
@@ -23,6 +26,7 @@ class ProcessingThread(QThread):
         try:
             self._process_activity()
         except Exception as e:
+            debug.log(f"Erro ao processar atividade: {e}")
             self.finished_error.emit(str(e))
     
     def _process_activity(self):
@@ -30,18 +34,19 @@ class ProcessingThread(QThread):
         ava_manager = AvaManager()
         llm = CallLLM()
         prompt_manager = PromptManager()
-        
-        if self.data['identifier_type'] == 'URL':
+
+        valor = self.data['url_or_id']
+        if not valor.isdigit():
             self.progress_update.emit("🔗 Extraindo ID da URL...")
-            self.data['url_or_id'] = ava_manager.extract_id_from_url(self.data['url_or_id'])
+            valor = ava_manager.extract_id_from_url(valor)
         
         self.progress_update.emit("🌐 Conectando ao AVA e obtendo atividade...")
         activity = ava_manager.get_activity_text(
             login=EnvManager.get_env('LOGIN'),
             password=EnvManager.get_env('PASSWORD'),
-            activity_id=self.data['url_or_id']
+            activity_id=valor
         )
-        
+
         self.progress_update.emit("📝 Preparando prompt para IA...")
         prompt = prompt_manager.get_activity_prompt(activity_content=activity)
         
@@ -53,7 +58,18 @@ class ProcessingThread(QThread):
             content=response,
             filename=self.data['filename']
         )
-        
+
+        if self.data['action'] == 'Sim, quero enviar.':
+            self.progress_update.emit("📤 Enviando resposta para o AVA...")
+            ava_manager.submit_file(
+                login=EnvManager.get_env('LOGIN'),
+                password=EnvManager.get_env('PASSWORD'),
+                activity_id=valor,
+                file_path=EnvManager.get_env('OUTPUT_PATH'),
+                filename=self.data['filename']
+            )
+
+        debug.log(f"Processamento concluído.")
         self.progress_update.emit("✅ Processamento concluído!")
         self.finished_success.emit(f"Arquivo '{self.data['filename']}' salvo com sucesso!")
 
@@ -69,9 +85,6 @@ class AvaActivityInterface(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(10)
-
-        self.identifier_type = QComboBox()
-        self.identifier_type.addItems(["ID", "URL"])
 
         self.action = QComboBox()
         self.action.addItems(["Sim, quero enviar.", "Não, apenas salvar."])
@@ -90,8 +103,6 @@ class AvaActivityInterface(QWidget):
         self.status_label.setVisible(False)
         self.status_label.setStyleSheet("color: #666; font-style: italic;")
 
-        layout.addWidget(QLabel("Identificador da atividade AVA:"))
-        layout.addWidget(self.identifier_type)
         layout.addWidget(QLabel("Deseja enviar o código pro AVA automaticamente?"))
         layout.addWidget(self.action)
         layout.addWidget(QLabel("URL ou ID da atividade do AVA:"))
@@ -109,7 +120,6 @@ class AvaActivityInterface(QWidget):
     def _connect_signals(self):
         self.url_or_id.textChanged.connect(self.validar_campos)
         self.filename.textChanged.connect(self.validar_campos)
-        self.identifier_type.currentIndexChanged.connect(self.validar_campos)
         self.action.currentIndexChanged.connect(self.validar_campos)
         self.btn_enviar.clicked.connect(self.process_data)
 
@@ -117,14 +127,12 @@ class AvaActivityInterface(QWidget):
         campos_validos = (
             bool(self.url_or_id.text().strip()) and 
             bool(self.filename.text().strip()) and 
-            self.identifier_type.currentIndex() >= 0 and 
             self.action.currentIndex() >= 0
         )
         self.btn_enviar.setEnabled(campos_validos)
 
     def get_data(self) -> dict:
         return {
-            "identifier_type": self.identifier_type.currentText(),
             "action": self.action.currentText(),
             "url_or_id": self.url_or_id.text().strip(),
             "filename": self.filename.text().strip()
@@ -184,6 +192,7 @@ class AvaActivityInterface(QWidget):
             
         except Exception as e:
             self._hide_processing_ui()
+            debug.log(f"Erro inesperado ao iniciar o processamento: {e}")
             QMessageBox.critical(self, "Erro", f"Erro inesperado: {str(e)}")
 
     def closeEvent(self, event):

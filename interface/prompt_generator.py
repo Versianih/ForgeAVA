@@ -7,6 +7,9 @@ from modules.prompt_manager import PromptManager
 from modules.file_manager import FileManager
 from api.call_api import CallLLM
 
+from modules.debug import Debug
+debug = Debug()
+
 
 class ProcessingThread(QThread):
     progress_update = Signal(str)
@@ -19,11 +22,12 @@ class ProcessingThread(QThread):
     
     def run(self):
         try:
-            self._process_activity()
+            self._process_response()
         except Exception as e:
+            debug.log(f"Erro ao processar resposta: {e}")
             self.finished_error.emit(str(e))
     
-    def _process_activity(self):
+    def _process_response(self):
         self.progress_update.emit("🔧 Inicializando componentes...")
         llm = CallLLM()
         prompt_manager = PromptManager()
@@ -155,6 +159,7 @@ class PromptGeneratorInterface(QWidget):
             
         except Exception as e:
             self._hide_processing_ui()
+            debug.log(f"Erro inesperado ao iniciar o processamento: {e}")
             QMessageBox.critical(self, "Erro", f"Erro inesperado: {str(e)}")
 
     def closeEvent(self, event):

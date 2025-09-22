@@ -1,5 +1,5 @@
-from os import path
-from dotenv import load_dotenv, set_key, get_key
+from os import path, getenv
+from dotenv import load_dotenv, set_key
 from paths import Paths
 
 class EnvManager:
@@ -10,17 +10,19 @@ class EnvManager:
         'PASSWORD': '',
         'LANGUAGE': 'Python',
         'OUTPUT_PATH': f'{Paths.output.absolute()}',
-        'USE_PROMPT': 'Sim'
+        'USE_PROMPT': 'Sim',
+        'DEBUG': 'False'
     }
 
     @staticmethod
-    def get_env(key: str) -> str | None:
+    def get_env(key: str, default: str | None = None) -> str | None:
         load_dotenv(Paths.env)
-        return get_key(Paths.env, key)
+        return getenv(key, default)
 
     @staticmethod
     def update_env(key: str, value: str) -> None:
         set_key(Paths.env, key, str(value))
+        load_dotenv(Paths.env)
 
     @staticmethod
     def create_env_or_pass() -> None:
@@ -33,11 +35,13 @@ class EnvManager:
 
         missing_keys = []
         for key in EnvManager.default_env:
-            if get_key(Paths.env, key) is None:
+            if getenv(key, None) is None:
                 missing_keys.append(key)
 
         if missing_keys:
             for key, value in EnvManager.default_env.items():
-                current_value = get_key(Paths.env, key)
+                current_value = getenv(key, None)
                 if current_value is None:
                     set_key(Paths.env, key, str(value))
+        
+        load_dotenv(Paths.env)

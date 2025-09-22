@@ -6,6 +6,9 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 from modules.env_manager import EnvManager
 from modules.file_manager import FileManager
+from modules.debug import Debug
+debug = Debug()
+
 
 class CustomTextEdit(QTextEdit):
     def __init__(self, *args, **kwargs):
@@ -100,6 +103,7 @@ class GeneratedFilesInterface(QWidget):
             self.arquivo_original = self.editor.toPlainText()
             self.btn_salvar.hide()
             self.btn_salvar.setEnabled(False)
+            debug.log(f"Arquivo salvo: {self.arquivo_atual}")
             QMessageBox.information(self, "Sucesso", "Alterações salvas com sucesso!")
 
     def voltar_lista(self):

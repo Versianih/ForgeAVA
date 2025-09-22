@@ -8,6 +8,10 @@ from modules.prompt_manager import PromptManager
 from modules.language import Language
 from api.models import Models
 
+from modules.debug import Debug
+debug = Debug()
+
+
 class SettingsInterface(QWidget):
     def __init__(self):
         super().__init__()
@@ -119,8 +123,10 @@ class SettingsInterface(QWidget):
             manager.update_env('OUTPUT_PATH', data['output'])
             manager.update_env('USE_PROMPT', data['use_prompt'])
 
+            debug.log("Configurações salvas com sucesso.")
             QMessageBox.information(self, "Sucesso", "Configurações salvas com sucesso!")
         except Exception as e:
+            debug.log(f"Erro ao salvar configurações: {e}")
             QMessageBox.critical(self, "Erro", "Erro ao salvar configurações.")
 
     def save_prompt(self):
@@ -129,8 +135,10 @@ class SettingsInterface(QWidget):
             prompt_manager = PromptManager()
             prompt_manager.save_prompt(prompt)
 
+            debug.log("Prompt salvo com sucesso.")
             QMessageBox.information(self, "Sucesso", "Prompt salvo com sucesso!")
         except Exception as e:
+            debug.log(f"Erro ao salvar o prompt: {e}")
             QMessageBox.critical(self, "Erro", "Erro ao salvar o prompt.")
 
     def load_settings(self):
