@@ -125,6 +125,17 @@ class SettingsInterface(QWidget):
 
             debug.log("Configurações salvas com sucesso.")
             QMessageBox.information(self, "Sucesso", "Configurações salvas com sucesso!")
+
+            # Recarrega a pasta nos arquivos gerados
+            parent = self.parent()
+            while parent:
+                if hasattr(parent, "stack"):
+                    widget = parent.stack.widget(2)
+                    if hasattr(widget, "load_files"):
+                        widget.load_files()
+                    break
+                parent = parent.parent()
+
         except Exception as e:
             debug.log(f"Erro ao salvar configurações: {e}")
             QMessageBox.critical(self, "Erro", "Erro ao salvar configurações.")

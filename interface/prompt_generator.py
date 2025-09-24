@@ -133,8 +133,8 @@ class PromptGeneratorInterface(QWidget):
         while parent:
             if hasattr(parent, "stack"):
                 widget = parent.stack.widget(2)
-                if hasattr(widget, "carregar_arquivos"):
-                    widget.carregar_arquivos()
+                if hasattr(widget, "load_files"):
+                    widget.load_files()
                 break
             parent = parent.parent()
 
