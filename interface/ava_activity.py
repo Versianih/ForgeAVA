@@ -39,8 +39,8 @@ class ProcessingThread(QThread):
         if not valor.isdigit():
             self.progress_update.emit("🔗 Extraindo ID da URL...")
             valor = ava_manager.extract_id_from_url(valor)
-        
-        self.progress_update.emit("🌐 Conectando ao AVA e obtendo atividade...")
+
+        self.progress_update.emit("🌐 Conectando ao AVA e obtendo atividade(Esta ação pode demorar um pouco)...")
         activity = ava_manager.get_activity_text(
             login=EnvManager.get_env('LOGIN'),
             password=EnvManager.get_env('PASSWORD'),
