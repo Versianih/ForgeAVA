@@ -3,7 +3,6 @@ from PySide6.QtWidgets import (
     QHBoxLayout, QStackedWidget, QLabel
 )
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont
 
 from interface.ava_activity import AvaActivityInterface
 from interface.prompt_generator import PromptGeneratorInterface
