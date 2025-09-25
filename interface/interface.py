@@ -3,6 +3,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout, QStackedWidget, QLabel
 )
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont
 
 from interface.ava_activity import AvaActivityInterface
 from interface.prompt_generator import PromptGeneratorInterface
@@ -23,7 +24,7 @@ class Interface(QMainWindow, Styles):
         layout = QHBoxLayout(central_widget)
 
         self.sidebar = QVBoxLayout()
-        self.sidebar.setAlignment(Qt.AlignTop)
+        self.sidebar.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         self.btn1 = QPushButton("Gerar código de atividade AVA")
         self.btn2 = QPushButton("Gerar código por prompt")
@@ -31,6 +32,9 @@ class Interface(QMainWindow, Styles):
         self.btn4 = QPushButton("Configurações")
         self.btn5 = QPushButton("Ajuda")
         self.btn_exit = QPushButton("Sair")
+
+        label_forgeava = QLabel('ForgeAVA')
+        label_forgeava.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         for b in [self.btn1, self.btn2, self.btn3, self.btn4, self.btn5, self.btn_exit]:
             b.setObjectName("sidebarButton")
@@ -41,7 +45,7 @@ class Interface(QMainWindow, Styles):
         self.sidebar.addWidget(self.btn4)
         self.sidebar.addWidget(self.btn5)
         self.sidebar.addStretch()
-        self.sidebar.addWidget(QLabel('ForgeAVA'))
+        self.sidebar.addWidget(label_forgeava)
         self.sidebar.addWidget(self.btn_exit)
 
         self.stack = QStackedWidget()

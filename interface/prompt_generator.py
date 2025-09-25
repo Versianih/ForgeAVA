@@ -2,52 +2,10 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit,
     QPushButton, QMessageBox, QProgressBar
 )
-from PySide6.QtCore import QThread, Signal
-from interface.utils import Utils
-from modules.prompt_manager import PromptManager
-from modules.file_manager import FileManager
-from api.call_api import CallLLM
+from interface.utils import Utils, ProcessingThread
 
 from modules.debug import Debug
 debug = Debug()
-
-
-class ProcessingThread(QThread):
-    progress_update = Signal(str)
-    finished_success = Signal(str)
-    finished_error = Signal(str)
-    
-    def __init__(self, data):
-        super().__init__()
-        self.data = data
-    
-    def run(self):
-        try:
-            self._process_response()
-        except Exception as e:
-            debug.log(f"Erro ao processar resposta: {e}")
-            self.finished_error.emit(str(e))
-    
-    def _process_response(self):
-        self.progress_update.emit("🔧 Inicializando componentes...")
-        llm = CallLLM()
-        prompt_manager = PromptManager()
-        prompt_text = self.data['prompt_text']
-        
-        self.progress_update.emit("📝 Preparando prompt para IA...")
-        prompt = prompt_manager.get_activity_prompt(activity_content=prompt_text)
-        
-        self.progress_update.emit("🤖 Processando com IA (isso pode demorar)...")
-        response = llm.call(prompt=prompt)
-        
-        self.progress_update.emit("💾 Salvando arquivo...")
-        FileManager.save_response(
-            content=response,
-            filename=self.data['filename']
-        )
-        
-        self.progress_update.emit("✅ Processamento concluído!")
-        self.finished_success.emit(f"Arquivo '{self.data['filename']}' salvo com sucesso!")
 
 
 class PromptGeneratorInterface(QWidget, Utils):
@@ -154,7 +112,7 @@ class PromptGeneratorInterface(QWidget, Utils):
             
             self._show_processing_ui()
 
-            self.processing_thread = ProcessingThread(data)
+            self.processing_thread = ProcessingThread(data, 'PROMPT')
             self.processing_thread.progress_update.connect(self._update_progress)
             self.processing_thread.finished_success.connect(self._on_processing_success)
             self.processing_thread.finished_error.connect(self._on_processing_error)

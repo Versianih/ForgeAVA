@@ -2,77 +2,11 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit,
     QComboBox, QPushButton, QMessageBox, QProgressBar
 )
-from PySide6.QtCore import QThread, Signal
-from interface.utils import Utils
-from modules.ava_manager import AvaManager
+from interface.utils import Utils, ProcessingThread
 from modules.env_manager import EnvManager
-from modules.prompt_manager import PromptManager
-from modules.file_manager import FileManager
-from api.call_api import CallLLM
 
 from modules.debug import Debug
 debug = Debug()
-
-
-class ProcessingThread(QThread):
-    progress_update = Signal(str)
-    finished_success = Signal(str)
-    finished_error = Signal(str)
-    
-    def __init__(self, data):
-        super().__init__()
-        self.data = data
-    
-    def run(self):
-        try:
-            self._process_activity()
-        except Exception as e:
-            debug.log(f"Erro ao processar atividade: {e}")
-            self.finished_error.emit(str(e))
-    
-    def _process_activity(self):
-        self.progress_update.emit("🔧 Inicializando componentes...")
-        ava_manager = AvaManager()
-        llm = CallLLM()
-        prompt_manager = PromptManager()
-
-        valor = self.data['url_or_id']
-        if not valor.isdigit():
-            self.progress_update.emit("🔗 Extraindo ID da URL...")
-            valor = ava_manager.extract_id_from_url(valor)
-
-        self.progress_update.emit("🌐 Conectando ao AVA e obtendo atividade(Esta ação pode demorar um pouco)...")
-        activity = ava_manager.get_activity_text(
-            login=EnvManager.get_env('LOGIN'),
-            password=EnvManager.get_env('PASSWORD'),
-            activity_id=valor
-        )
-
-        self.progress_update.emit("📝 Preparando prompt para IA...")
-        prompt = prompt_manager.get_activity_prompt(activity_content=activity)
-        
-        self.progress_update.emit("🤖 Processando com IA (isso pode demorar)...")
-        response = llm.call(prompt=prompt)
-        
-        self.progress_update.emit("💾 Salvando arquivo...")
-        FileManager.save_response(
-            content=response,
-            filename=self.data['filename']
-        )
-
-        if self.data['action'] == 'Sim, quero enviar.':
-            self.progress_update.emit("📤 Enviando resposta para o AVA...")
-            ava_manager.submit_file(
-                login=EnvManager.get_env('LOGIN'),
-                password=EnvManager.get_env('PASSWORD'),
-                activity_id=valor,
-                file_path=EnvManager.get_env('OUTPUT_PATH'),
-                filename=self.data['filename']
-            )
-
-        debug.log(f"Processamento concluído.")
-        self.progress_update.emit("✅ Processamento concluído!")
-        self.finished_success.emit(f"Arquivo '{self.data['filename']}' salvo com sucesso!")
 
 
 class AvaActivityInterface(QWidget, Utils):
@@ -135,9 +69,12 @@ class AvaActivityInterface(QWidget, Utils):
 
     def get_data(self) -> dict:
         return {
-            "action": self.action.currentText(),
-            "url_or_id": self.url_or_id.text().strip(),
-            "filename": self.filename.text().strip()
+            'action': self.action.currentText(),
+            'url_or_id': self.url_or_id.text().strip(),
+            'filename': self.filename.text().strip(),
+            'login': EnvManager.get_env('LOGIN'),
+            'password': EnvManager.get_env('PASSWORD'),
+            'output_path': EnvManager.get_env('OUTPUT_PATH')
         }
 
     def _show_processing_ui(self) -> None:
@@ -186,7 +123,7 @@ class AvaActivityInterface(QWidget, Utils):
             
             self._show_processing_ui()
 
-            self.processing_thread = ProcessingThread(data)
+            self.processing_thread = ProcessingThread(data, 'AVA')
             self.processing_thread.progress_update.connect(self._update_progress)
             self.processing_thread.finished_success.connect(self._on_processing_success)
             self.processing_thread.finished_error.connect(self._on_processing_error)
@@ -195,7 +132,7 @@ class AvaActivityInterface(QWidget, Utils):
         except Exception as e:
             self._hide_processing_ui()
             debug.log(f"Erro inesperado ao iniciar o processamento: {e}")
-            QMessageBox.critical(self, "Erro", f"Erro inesperado: {str(e)}")
+            QMessageBox.critical(self, "Erro", f"Erro inesperado.")
 
     def closeEvent(self, event):
         if self.processing_thread and self.processing_thread.isRunning():
