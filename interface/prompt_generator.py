@@ -3,6 +3,7 @@ from PySide6.QtWidgets import (
     QPushButton, QMessageBox, QProgressBar
 )
 from PySide6.QtCore import QThread, Signal
+from interface.utils import Utils
 from modules.prompt_manager import PromptManager
 from modules.file_manager import FileManager
 from api.call_api import CallLLM
@@ -49,7 +50,7 @@ class ProcessingThread(QThread):
         self.finished_success.emit(f"Arquivo '{self.data['filename']}' salvo com sucesso!")
 
 
-class PromptGeneratorInterface(QWidget):
+class PromptGeneratorInterface(QWidget, Utils):
     def __init__(self):
         super().__init__()
         self.processing_thread = None
@@ -75,14 +76,16 @@ class PromptGeneratorInterface(QWidget):
         self.status_label.setVisible(False)
         self.status_label.setStyleSheet("color: #666; font-style: italic;")
 
-        layout.addWidget(QLabel("Prompt para geração de código:"))
-        layout.addWidget(self.prompt_text)
-        layout.addWidget(QLabel("Nome do arquivo a ser gerado:"))
-        layout.addWidget(self.filename)
-        layout.addWidget(self.btn_enviar)
+        self.add_label(layout, 'Prompt para geração de código:', self.prompt_text)
+        self.add_label(layout, 'Nome do arquivo a ser gerado:', self.filename)
         
-        layout.addWidget(self.progress_bar)
-        layout.addWidget(self.status_label)
+        self.add_label(
+            layout, 
+            None, 
+            self.btn_enviar,
+            self.progress_bar,
+            self.status_label
+        )
         
         layout.addStretch()
         self.setLayout(layout)

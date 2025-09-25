@@ -20,8 +20,9 @@ class EnvManager:
         return getenv(key, default)
 
     @staticmethod
-    def update_env(key: str, value: str) -> None:
-        set_key(Paths.env, key, str(value))
+    def update_env(dict_values:dict) -> None:
+        for key, value in dict_values.items():
+            set_key(Paths.env, key, str(value))
         load_dotenv(Paths.env, override=True)
 
     @staticmethod

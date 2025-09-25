@@ -3,6 +3,7 @@ from PySide6.QtWidgets import (
     QFileDialog, QPlainTextEdit, QLabel, QMessageBox, QScrollArea
 )
 from PySide6.QtCore import Qt
+from interface.utils import Utils
 from modules.env_manager import EnvManager
 from modules.prompt_manager import PromptManager
 from modules.language import Language
@@ -12,7 +13,7 @@ from modules.debug import Debug
 debug = Debug()
 
 
-class SettingsInterface(QWidget):
+class SettingsInterface(QWidget, Utils):
     def __init__(self):
         super().__init__()
         
@@ -67,26 +68,28 @@ class SettingsInterface(QWidget):
 
         self.save_btn = QPushButton("Salvar Configurações")
 
-        layout.addWidget(QLabel("Login AVA:"))
-        layout.addWidget(self.login)
-        layout.addWidget(QLabel("Senha AVA:"))
-        layout.addWidget(self.password)
-        layout.addWidget(QLabel("API-KEY:"))
-        layout.addWidget(self.api_key)
-        layout.addWidget(QLabel("Usar Prompt?"))
-        layout.addWidget(self.use_prompt)
-        layout.addWidget(self.prompt_btn)
-        layout.addWidget(self.prompt_editor)
-        layout.addWidget(self.prompt_save_btn)
-        layout.addWidget(QLabel("Modelo de IA:"))
-        layout.addWidget(self.model_dropdown)
-        layout.addWidget(QLabel("Linguagem utilizada:"))
-        layout.addWidget(self.language_dropdown)
-        layout.addWidget(QLabel("Pasta de output dos arquivos gerados:"))
-        layout.addWidget(self.output_path)
-        layout.addWidget(self.path_btn)
+        self.add_label(layout, "Login AVA:", self.login)
+        self.add_label(layout, "Senha AVA:", self.password)
+        self.add_label(layout, "API-KEY:", self.api_key)
+        self.add_label(
+            layout, 
+            "Usar Prompt?", 
+            self.use_prompt, 
+            self.prompt_btn, 
+            self.prompt_editor, 
+            self.prompt_save_btn
+        )
+        self.add_label(layout, "Modelo de IA:", self.model_dropdown)
+        self.add_label(layout, "Linguagem Utilizada:", self.language_dropdown)
+        self.add_label(
+            layout, 
+            "Pasta de output dos arquivos gerados:", 
+            self.output_path, 
+            self.path_btn
+        )
+
         layout.addStretch()
-        layout.addWidget(self.save_btn)
+        self.add_label(layout, None, self.save_btn)
 
         scroll_area.setWidget(content_widget)
         main_layout.addWidget(scroll_area)
@@ -114,19 +117,20 @@ class SettingsInterface(QWidget):
     def save_settings(self):
         try:
             data = self.get_settings()
-            manager = EnvManager()
-            manager.update_env('LOGIN', data['login'])
-            manager.update_env('PASSWORD', data['password'])
-            manager.update_env('API_KEY', data['api_key'])
-            manager.update_env('MODEL', data['model'])
-            manager.update_env('LANGUAGE', data['language'])
-            manager.update_env('OUTPUT_PATH', data['output'])
-            manager.update_env('USE_PROMPT', data['use_prompt'])
+            new_settings = {
+                'LOGIN': data['login'],
+                'PASSWORD': data['password'],
+                'API_KEY': data['api_key'],
+                'MODEL': data['model'],
+                'LANGUAGE': data['language'],
+                'OUTPUT_PATH': data['output'],
+                'USE_PROMPT': data['use_prompt']
+            }
+            EnvManager.update_env(new_settings)
 
             debug.log("Configurações salvas com sucesso.")
             QMessageBox.information(self, "Sucesso", "Configurações salvas com sucesso!")
 
-            # Recarrega a pasta nos arquivos gerados
             parent = self.parent()
             while parent:
                 if hasattr(parent, "stack"):

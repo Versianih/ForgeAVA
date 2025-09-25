@@ -3,6 +3,7 @@ from PySide6.QtWidgets import (
     QComboBox, QPushButton, QMessageBox, QProgressBar
 )
 from PySide6.QtCore import QThread, Signal
+from interface.utils import Utils
 from modules.ava_manager import AvaManager
 from modules.env_manager import EnvManager
 from modules.prompt_manager import PromptManager
@@ -74,7 +75,7 @@ class ProcessingThread(QThread):
         self.finished_success.emit(f"Arquivo '{self.data['filename']}' salvo com sucesso!")
 
 
-class AvaActivityInterface(QWidget):
+class AvaActivityInterface(QWidget, Utils):
     def __init__(self):
         super().__init__()
         self.processing_thread = None
@@ -103,16 +104,17 @@ class AvaActivityInterface(QWidget):
         self.status_label.setVisible(False)
         self.status_label.setStyleSheet("color: #666; font-style: italic;")
 
-        layout.addWidget(QLabel("Deseja enviar o código pro AVA automaticamente?"))
-        layout.addWidget(self.action)
-        layout.addWidget(QLabel("URL ou ID da atividade do AVA:"))
-        layout.addWidget(self.url_or_id)
-        layout.addWidget(QLabel("Nome do arquivo a ser gerado:"))
-        layout.addWidget(self.filename)
-        layout.addWidget(self.btn_enviar)
+        self.add_label(layout, 'Deseja enviar o código pro AVA automaticamente?', self.action)
+        self.add_label(layout, 'URL ou ID da atividade do AVA:', self.url_or_id)
+        self.add_label(layout, 'Nome do arquivo a ser gerado:', self.filename)
         
-        layout.addWidget(self.progress_bar)
-        layout.addWidget(self.status_label)
+        self.add_label(
+            layout,
+            None,
+            self.btn_enviar,
+            self.progress_bar,
+            self.status_label
+        )
         
         layout.addStretch()
         self.setLayout(layout)
