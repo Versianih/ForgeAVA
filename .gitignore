@@ -5,9 +5,8 @@
 **/.env
 
 # Enviroments
-env/
-venv/
-.venv/
-.env/
+**/env
+**/venv
+**/.venv
 
-generatedCodes/*
+**/output
