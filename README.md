@@ -148,7 +148,7 @@ Você pode editar essas configurações pela interface ou manualmente.
 
 ## Licença
 
-Esse código está sob licença MIT, Veja mais em [LICENSE](LICENSE).
+Esse código está sob a **GNU Affero General Public License v3.0 (AGPL-3.0)**, Veja mais em [LICENSE](LICENSE).
 
 ---
 
