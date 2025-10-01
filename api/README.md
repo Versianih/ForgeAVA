@@ -34,6 +34,17 @@ O módulo conta com o arquivo central `call_api.py`, que contém toda a lógica 
 | gpt-5-nano-2025-08-07 | GPT-5 Nano  | openai   |
 | gpt-4.1-2025-04-14    | GPT-4.1     | openai   |
 
+### Anthropic
+
+| Modelo                | Nome        | Provedor |
+|-----------------------|-------------|----------|
+| claude-opus-4-1-20250805 | Claude 4.1 Opus | anthropic   |
+| claude-opus-4-20250514 | Claude 4 Opus  | anthropic   |
+| claude-sonnet-4-20250514 | Claude 4 Sonnet | anthropic   |
+| claude-3-7-sonnet-latest | Claude 3.7 Sonnet | anthropic   |
+| claude-3-5-haiku-latest | Claude 3.5 Haiku | anthropic   |
+| claude-3-haiku-20240307 | Claude 3 Haiku | anthropic   |
+
 ## Estrutura de arquivos
 ```
 api/

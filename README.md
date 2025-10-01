@@ -4,7 +4,7 @@
 
 ---
 
-## Índice
+## Sumário
 
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação Manual](#instalação-manual)
@@ -123,14 +123,14 @@ O arquivo `.env` armazena todas as configurações do sistema.
 Exemplo de variáveis:
 ```
 [EXEMPLO de .env]
-API_KEY=suachave
-MODEL=gpt-4o
-LOGIN=seulogin
-PASSWORD=suasenha
-LANGUAGE=Python
-OUTPUT_PATH=/caminho/para/output
-USE_PROMPT=Sim
-DEBUG=False
+API_KEY='suachave'
+MODEL='gpt-4o'
+LOGIN='seulogin'
+PASSWORD='suasenha'
+LANGUAGE='Python'
+OUTPUT_PATH='/caminho/para/output'
+USE_PROMPT='Sim'
+DEBUG='False'
 ```
 Você pode editar essas configurações pela interface ou manualmente.
 
@@ -164,7 +164,7 @@ Dúvidas e sugestões: versiani.ifes@gmail.com
 
 ---
 
-## Observações
+## Observação
 
 Este projeto faz parte do meu portfólio pessoal e é desenvolvido unicamente para fins de estudos e aprendizado.
 

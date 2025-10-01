@@ -1,3 +1,4 @@
+from datetime import datetime
 from paths import Paths
 from modules.file_manager import FileManager
 from modules.env_manager import EnvManager
@@ -8,7 +9,8 @@ class PromptManager:
         raw_prompt = PromptManager.read_prompt()
         format_keys = {
             'activity_content': activity_content,
-            'language': EnvManager.get_env('LANGUAGE')
+            'language': EnvManager.get_env('LANGUAGE'),
+            'date_now': datetime.now().strftime('%d/%m/%Y')
         }
         prompt = raw_prompt.format(**format_keys)
         return prompt

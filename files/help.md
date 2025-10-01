@@ -1,31 +1,31 @@
-# Como obter a chave API Gemini?
-  - Acesse https://aistudio.google.com/apikey e procure a opção "Get API Key" e obtenha sua chave API Gemini.
-  - Logo após acesse a aba "Configurações" e cole sua chave no campo indicado.
+# Ajuda! Como eu uso esse sistema?
+## Obtenção das chaves de API
+1. **Gemini** (Paga c/ limite gratuito): https://aistudio.google.com/api-keys
 
+2. **Groq** (Paga c/ limite gratuito): https://console.groq.com/keys
 
-# Como gerar um código de uma Atividade do AVA?
-  - Acesse a atividade desejada pelo seu navegador.
-  - Copie a URL ou o ID da atividade.
-  - Cole no campo indicado em "Gerar Código de Atividade AVA".
-  - Selecione qual forma de identificação da atividade você irá utilizar(URL ou ID).
-  - Selecione Também se deseja enviar a atividade automaticamente ou apenas salvar o arquivo com o código gerado.
-  - Informe o nome do arquivo no qual o código gerado vai ser salvo, com a extensão(EX: atividade.py).
-  - Clique em "Gerar Código"
+3. **OpenAI** (Paga): https://platform.openai.com/api-keys
 
+4. **Anthropic** (Paga): ...
 
-# Onde encontar o ID da atividade AVA?
-  - Ao acessar a atividade na qual deseja automatizar a geração do código, procure na URL da página um campo "id=".
-  - Copie o número de normalmente de 6+ dígitos.
-  - Cole no campo indicado em "ID da Atividade AVA", e selecione na identificação da atividade AVA o campo "ID".
+## Prompt
+> O prompt é inserido junto com o conteúdo da atividade/prompt, como forma de moldar a resposta da IA, fornecendo instruções detalhadas de como a IA deve se comportar. 
+### TAGS no Prompt
+- No prompt, existem TAGS que podem ser inseridas para passar informações diretamente a IA através do prompt, essas TAGS são:
+```bash
+{language}           # Linguagem de programação escolhida nas configurações
+{date_now}           # Data atual no formato dd/mm/aaaa
+{activity_content}   # Conteúdo da atividade/prompt
+```
+## Utilizando o sistema
+### Gerando código por uma atividade do AVA
+- Basta copiar a URL da atividade, ou o número após o parâmetro `?id=` e colar no campo especificado, no outro campo deve ser inserido o nome no qual o arquivo gerado deverá ser salvo, inclua a extensão do arquivo, Ex: `xxxxx.py`
 
+### Gerando código por um prompt próprio
+- Essa funcionalidade funciona como qualquer outro chat LLM, onde você especifica o código no prompt e o sistema já chama a IA e salva seu arquivo automaticamente.
 
-# Como gerar um código com um Texto?
-  - Vá até a aba "Gerar Código com Texto".
-  - Detalhe como você quer que seu código seja gerado.
-  - Informe o nome do arquivo no qual o código gerado vai ser salvo, com a extensão(EX: atividade.py).
-  - Clique em "Gerar Código"
-
-
-# O que é o arquivo prompt.txt?
-  - O arquivo prompt.txt contém um prompt com algumas instruções que são fornecidas à LLM para que seu código seja gerado de uma maneira que satisfaça as exigências de determinados professores.
-  - O arquivo pode ser editado, se houver necessidade, na aba "Configurações".
+## Debug
+Caso você esteja testando funções e modificando o código, o sistema conta com um sistema de debug, que é ativado substituindo a váriavel debug no .env por:
+```python
+DEBUG='True'
+```
