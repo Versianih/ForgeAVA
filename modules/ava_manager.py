@@ -9,7 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
-DEBUG = True
+from modules.debug import Debug
+DEBUG = Debug.in_debug()
 
 class AvaManager:
     BASE_URL = "https://ava3.cefor.ifes.edu.br/"
